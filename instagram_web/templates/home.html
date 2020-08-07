@@ -9,11 +9,8 @@
 
 {% block content %}
   <h1>Homepage</h1>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-primary" role="alert">{{ message }}</div>
-    {% endfor %}
+  {% if current_user.is_authenticated %}
+    <h6>You now login as {{current_user.username}}.</h6>
   {% endif %}
-  {% endwith %}
+
 {% endblock %}
