@@ -2,5 +2,9 @@
 
 {% block content %}
 <h1>{{user.username}}'s Profile</h1>
+<a class="btn btn-sm btn-outline-secondary" href="{{url_for('users.edit',id=user.id)}}">Edit Profile</a>
+<br>
+<hr>
+<img src="{{user.full_image_path}}" />
 
 {% endblock %}

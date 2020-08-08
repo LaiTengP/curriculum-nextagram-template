@@ -1,6 +1,7 @@
 from models.base_model import BaseModel
 import peewee as pw
 from werkzeug.security import generate_password_hash
+from playhouse.hybrid import hybrid_property
 import re
 from flask_login import UserMixin
 
@@ -9,12 +10,21 @@ class User(UserMixin,BaseModel):
     email = pw.CharField(unique=True, null=False)
     password_hash = pw.TextField(null=False)
     password = None
+    image_path = pw.TextField(null=True)
+
+    @hybrid_property
+    def full_image_path(self):
+        if self.image_path:
+            from app import app
+            return app.config.get("S3_LOCATION") + self.image_path
+        else:
+            return ""
 
     def validate(self):
         #email unique
         existing_user_email = User.get_or_none(User.email == self.email)
         if existing_user_email and existing_user_email.id != self.id:
-            self.errors.append (f'User with email: {self.email} already exist.')   
+            self.errors.append (f'User with email: {self.email} already exists.')   
         #username unique
         existing_user_username = User.get_or_none(User.username == self.username)
         if existing_user_username and existing_user_username.id != self.id:

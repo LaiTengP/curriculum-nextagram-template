@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template,request, url_for, redirect, flash
 from models.user import User
 from flask_login import login_required, login_user, current_user
+from instagram_web.util.helpers import upload_file_to_s3
+from werkzeug import secure_filename
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -17,18 +19,18 @@ def create():
     params = request.form
     new_user = User(username=params.get("username"), email= params.get("email"), password = params.get("password"))
     if new_user.save():
-        flash ("Successfully Sign Up!", "success")
+        flash("Successfully Sign Up!", "success")
         login_user(new_user)
         return redirect(url_for("users.show", username=new_user.username))
     else:
         for err in new_user.errors:
-            flash (err, "danger")
+            flash(err, "danger")
         return redirect(url_for("users.new"))
 
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
-    user = User.get_or_none (User.username == username)
+    user = User.get_or_none(User.username == username)
     if user:
         return render_template("users/show.html",user=user)
     else:
@@ -48,10 +50,10 @@ def edit(id):
         if current_user.id == int(id):
             return render_template("users/edit.html", user=user)
         else:
-            flash ("You are not authorized to edit users other than yourself!", "danger")
+            flash("You are not authorized to edit users other than yourself!", "danger")
             return redirect(url_for("users.show", username = user.username))
     else:
-        flash ("No such user!")
+        flash("No such user!")
         return redirect(url_for("home"))        
 
 @users_blueprint.route('/<id>', methods=['POST'])
@@ -64,24 +66,57 @@ def update(id):
 
             user.username = params.get("username")
             user.email = params.get("email")
+
             password = params.get("password")
         
             if len(password) > 0:
                 user.password = password
             
             if user.save():
-                flash ("Profile Updated Successfully", "primary")
-                return redirect(url_for("users.show", username = user.username))
+                flash("Profile Updated Successfully", "primary")
+                return redirect(url_for("users.show", username=user.username))
             else:
-                flash ("Unable to. Please try again!")
+                flash("Unable to edit. Please try again!")
                 for err in user.errors:
-                    flash (err)
+                    flash(err)
                 return redirect(url_for("users.edit", id=user.id))
                 
         else:
-            flash ("You are not authorized to edit users other than yourself!", "danger")
-            return redirect(url_for("users.show", username = user.username))   
+            flash("You are not authorized to edit users other than yourself!", "danger")
+            return redirect(url_for("users.show", username=user.username))   
 
     else:
-        flash ("No such user!")
+        flash("No such user!")
         return redirect(url_for("home"))        
+
+@users_blueprint.route('/<id>/upload', methods=['POST'])
+@login_required
+def upload(id):
+    user = User.get_or_none(User.id==id)
+    if user:
+        if current_user.id == int(id): 
+            if "profile_image" not in request.files:
+                flash ("No profile image provided.")
+                return redirect(url_for("users.edit", id=id))
+
+            file = request.files["profile_image"]
+
+            file.filename = secure_filename(file.filename)
+        
+            image_path = upload_file_to_s3(file,user.username )
+
+            user.image_path = image_path
+            if user.save():
+                return redirect(url_for("users.show", username=user.username))
+            else:
+                flash("Unable to upload. Please try again later.", "danger")
+                return redirect(url_for("users.edit", id=id))
+        else:
+            flash("You are not authorized to upload image from others account!")
+            return redirect(url_for("users.show", username=user.username))   
+
+    else:
+        flash("No such user!")
+        return redirect(url_for("home"))      
+   
+    
