@@ -36,11 +36,18 @@
         <ul class="navbar-nav ml-auto">
           {%  if current_user.is_authenticated %}
           <li class="nav-item">
+            <a class="nav-link" href="{{url_for('home')}}">Home</a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('users.show', username=current_user.username)}}">Profile</a>
+          </li>          
+          <li class="nav-item">
             <form action="{{url_for('sessions.destroy')}}" method="POST">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
               <input type="submit" class="btn btn-danger" value="Logout">
             </form>
           </li>
+
           {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('users.new')}}">Sign Up</a>
@@ -68,6 +75,7 @@
     {% endblock %}
     <footer>
       Made with &hearts; at <a target="_blank" href="https://www.nextacademy.com/?utm_source=github&utm_medium=student-challenge&utm_campaign=flask-nextagram">NEXT Academy</a>
+      by LT
     </footer>
   </body>
 </html>

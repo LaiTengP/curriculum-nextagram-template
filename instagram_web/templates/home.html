@@ -8,9 +8,25 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Homepage</h1>
-  {% if current_user.is_authenticated %}
-    <h6>You now login as {{current_user.username}}.</h6>
-  {% endif %}
+  <div class="container">
+    <h1>Homepage</h1>
+    {% if current_user.is_authenticated %}
+      <h6>You now login as @{{current_user.username}} </h6>
+      <br>
+    {% endif %}
+
+    <br>
+    <hr>
+
+    <h4>Welcome to say <span class="font-weight-bold text-danger font-italic">&hearts;HELLO&hearts;</span> to other Nextagrammer : </h3>
+    <ul class="list-unstyled list-group">
+    {% for user in users %}
+      <li class="list-group-item list-group-item-secondary">
+        <img src="{{user.full_image_path}}" class="img-thumbnail rounded-circle" width="50"/>
+        <a class="text-dark" href="{{url_for('users.show',username=user.username)}}">{{user.username}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  </div>
 
 {% endblock %}
