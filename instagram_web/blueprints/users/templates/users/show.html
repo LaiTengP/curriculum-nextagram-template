@@ -20,11 +20,14 @@
 <div class="container">
     
   <div class="row">
+
     {% for image in user.images %}  
       <div class="col-sm-4 mb-2">
         <img src="{{image.full_image_url}}" width="100%" height="auto" class="img-fluid"/>
+        <a href="{{url_for('checkouts.new', image_id=image.id)}}" class="btn btn-sm btn-outline-secondary">Donate</a>
       </div>
     {% endfor %}
+    
   </div>
 
 </div>

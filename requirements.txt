@@ -1,7 +1,9 @@
 autopep8==1.4.3
 boto3==1.14.37
 botocore==1.17.37
+braintree==4.3.0
 certifi==2018.11.29
+chardet==3.0.4
 Click==7.0
 colorama==0.4.1
 cssmin==0.2.0
@@ -11,6 +13,7 @@ Flask-Assets==0.12
 Flask-Cors==3.0.7
 Flask-Login==0.5.0
 Flask-WTF==0.14.3
+idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.10
 jmespath==0.10.0
@@ -22,6 +25,7 @@ psycopg2-binary==2.7.7
 pycodestyle==2.5.0
 python-dateutil==2.8.1
 python-dotenv==0.10.1
+requests==2.24.0
 s3transfer==0.3.3
 six==1.12.0
 urllib3==1.25.10

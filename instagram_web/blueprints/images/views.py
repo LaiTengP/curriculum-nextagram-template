@@ -13,6 +13,11 @@ images_blueprint = Blueprint('images',
 def new():
     return render_template('images/new.html')
 
+@images_blueprint.route("/<id>/show", methods=["GET"])
+@login_required
+def show(id):
+    image = Image.get_or_none(Image.id == id)
+    return render_template("images/show.html", image=image)
 
 @images_blueprint.route('/', methods=['POST'])
 @login_required
