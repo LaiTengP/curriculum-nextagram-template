@@ -8,25 +8,35 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container">
-    <h1>Homepage</h1>
-    {% if current_user.is_authenticated %}
-      <h6>You now login as @{{current_user.username}} </h6>
-      <br>
-    {% endif %}
 
-    <br>
-    <hr>
-
-    <h4>Welcome to say <span class="font-weight-bold text-danger font-italic">&hearts;HELLO&hearts;</span> to other Nextagrammer : </h3>
-    <ul class="list-unstyled list-group">
-    {% for user in users %}
-      <li class="list-group-item list-group-item-secondary">
-        <img src="{{user.full_image_path}}" class="img-thumbnail rounded-circle" width="50"/>
-        <a class="text-dark" href="{{url_for('users.show',username=user.username)}}">{{user.username}}</a>
-      </li>
-    {% endfor %}
-  </ul>
+  <div style="background-color:rgba(230, 230, 250, 0.4) !important" class="jumbotron">
+    <div class="container">
+      <h1 class="display-4">Hello, world!</h1>
+      <p class="lead">Welcome to Nextagram. Here is where you get to know more friends and connect to the World.</p>
+      <hr class="my-4">
+        {% if current_user.is_authenticated %}
+        <h6>You now login as @{{current_user.username}} </h6>
+        <br>
+        {% endif %}
+      <p class="lead">
+        <a class="btn btn-sm btn-outline-secondary" href="{{url_for('users.show',username=current_user.username)}}" role="button">My Profile Page</a>
+      </p>
+    </div>
   </div>
+
+  <div class="container">
+      <h4>Welcome to say <span class="font-weight-bold text-danger font-italic">&hearts;HELLO&hearts;</span> to other Nextagrammer : </h3>
+      <ul class="list-unstyled list-group">
+      {% for user in users %}
+        <li class="list-group-item list-group-item-secondary">
+          <div style="display: inline-block; width: 30px; height: 30px; overflow: hidden; border-radius: 50%;" class="border-0 border-dark">
+            <img src="{{user.full_image_path}}" style="width: auto; height: 100%;"/> 
+          </div>
+          
+          <a class="text-dark" href="{{url_for('users.show',username=user.username)}}"> @{{user.username}}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    </div>
 
 {% endblock %}

@@ -14,6 +14,8 @@ class Config(object):
     MAILGUN_API_KEY = os.environ.get("MG_PRIVATE_KEY")
     MAILGUN_DOMAIN = os.environ.get("MG_DOMAIN")
     MAILGUN_RECIPIENT = os.environ.get("MG_RECIPIENT")
+    G_CLIENT_ID = os.environ.get("OAUTH_ID")
+    G_CLIENT_SECRET = os.environ.get("OAUTH_SECRET")
 
 
 

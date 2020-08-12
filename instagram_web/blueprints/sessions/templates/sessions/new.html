@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container">
-<h1>Users#login</h1>
+<h1>Users#sign in</h1>
 
 <form action="{{url_for('sessions.create')}}" method = "POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -11,6 +11,13 @@
     <label>Password</label>
     <input type="password" name="password"/>
     <input type="submit"/>
+    <br>
+    <hr>
+    <h5>or</h5>
+
+    <p class="fab fa-google" style = " background: #dd4b39; color: white; padding: 8px; font-size: 20px; text-align: center; border-radius: 50%;"></p>
+    <a href="{{url_for('sessions.google_login')}}" class="text-secondary">Sign in with Google</a>
+
 </form>
 </div>
-{% endblock %}
+{% endblock %}  

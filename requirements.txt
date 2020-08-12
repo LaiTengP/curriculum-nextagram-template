@@ -1,11 +1,14 @@
+Authlib==0.14.3
 autopep8==1.4.3
 boto3==1.14.37
 botocore==1.17.37
 braintree==4.3.0
 certifi==2018.11.29
+cffi==1.14.1
 chardet==3.0.4
 Click==7.0
 colorama==0.4.1
+cryptography==3.0
 cssmin==0.2.0
 docutils==0.15.2
 Flask==1.0.2
@@ -23,6 +26,7 @@ peewee==3.8.2
 peewee-db-evolve==3.7.0
 psycopg2-binary==2.7.7
 pycodestyle==2.5.0
+pycparser==2.20
 python-dateutil==2.8.1
 python-dotenv==0.10.1
 requests==2.24.0
