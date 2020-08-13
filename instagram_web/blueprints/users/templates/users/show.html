@@ -4,13 +4,37 @@
 <div class="container">
   <div class="d-flex- justify-content-center">
       <h1>{{user.username}}'s Profile</h1>
+      
       <div style="display: inline-block; width: 150px; height: 150px; overflow: hidden; border-radius: 50%;" class="border-0 border-secondary">
         <img src="{{user.full_image_path}}"  style="width: auto; height: 100%; margin-left: -25px;"/>
       </div>
       <br>
       <div>
-        <a class="btn btn-sm btn-outline-secondary" href="{{url_for('users.edit',id=user.id)}}">Edit Profile</a>
-        <a class="btn btn-sm btn-outline-secondary" href="{{url_for('images.new')}}">Upload Image</a>
+      {% if current_user.id == user.id %}
+        <a class="btn btn-sm btn-outline-secondary" href="{{url_for('users.edit',id=user.id)}}"><i class="far fa-edit"></i> Edit Profile</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{{url_for('images.new')}}"><i class="fas fa-angle-double-up"></i> Upload Image</a>
+        <br>
+      {% else %}
+        {% if current_user.follow_status(user) %}
+          <form action="{{url_for('users.unfollow',idol_id=user.id)}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="submit" class="btn btn-sm btn-outline-secondary" value="Unfollow">
+          </form>
+        {% else %}
+          <form action="{{url_for('users.follow',idol_id=user.id)}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="submit" class="btn btn-sm btn-outline-secondary" value="&hearts; Follow">
+          </form>
+        {% endif %}
+      {% endif %}
+      <br>
+      
+      <form action="{{url_for('users.friend',username=user.username)}}" method="GET">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="submit" class="btn btn-sm btn-outline-secondary" value="Friends">
+      </form>
+        
+      </div>
       </div>   
   </div>
 </div>
@@ -20,16 +44,23 @@
 <div class="container">
     
   <div class="row">
-
-    {% for image in user.images %}  
-      <div class="col-sm-4 mb-2">
-        <img src="{{image.full_image_url}}" width="100%" height="300px" style="object-fit: cover;"/>
-        <a href="{{url_for('checkouts.new', image_id=image.id)}}">
-          <i class="fas fa-donate" style="color: coral; font-size: 15px;"></i>
-        </a>
-      </div>
-    {% endfor %}
-    
+    {% if current_user.id == user.id or not user.is_private or current_user.follow_status(user).is_approved %}
+      {% for image in user.images %}  
+          <div class="col-sm-4 mb-2">
+           
+              <img src="{{image.full_image_url}}" width="100%" height="300px" style="object-fit: cover;"/>
+          </div>  
+        {% if not current_user.id == user.id %} 
+          <div>
+            <a href="{{url_for('checkouts.new', image_id=image.id)}}">
+              <i class="fas fa-donate" style="color: grey; font-size: 15px;"></i>
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <span class="mx-auto text-dark">This profile is private. Follow @{{user.username}} to continue.</span>
+    {% endif %} 
   </div>
 
 </div>

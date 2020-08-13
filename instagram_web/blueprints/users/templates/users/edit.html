@@ -13,6 +13,10 @@
     <input type="email" name="email" value="{{user.email}}"/>
     <label>New Password (Leave it empty if maintain)</label>
     <input type="password" name="password"/>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="private" {{ 'checked' if user.is_private }}>
+        <label class="form-check-label text-danger" for="privacy">Private</label>
+    </div>
     <input type="submit"/>
 </form>
 

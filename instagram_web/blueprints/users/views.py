@@ -60,14 +60,25 @@ def edit(id):
 @login_required
 def update(id):
     user = User.get_or_none(User.id==id)
+    
     if user:
         if current_user.id == int(id):
             params = request.form
 
+            user.is_private = True if params.get("private") == "on" else False
+
             user.username = params.get("username")
             user.email = params.get("email")
 
+            is_private = params.get("is_private")
+            if is_private == False:
+                is_private == True
+
+            else:
+                is_private == False
+
             password = params.get("password")
+            
         
             if len(password) > 0:
                 user.password = password
@@ -118,5 +129,65 @@ def upload(id):
     else:
         flash("No such user!")
         return redirect(url_for("home"))      
-   
-    
+
+
+@users_blueprint.route('/<idol_id>/follow', methods=['POST'])
+@login_required
+def follow(idol_id):
+    idol = User.get_by_id(idol_id)
+
+    if current_user.follow(idol):
+        if current_user.follow_status(idol).is_approved:
+            flash(f"You have followed {idol.username}", "primary")
+        else:
+            flash(f"You have requested to follow {idol.username}","primary")
+        return redirect(url_for("users.show",username=idol.username))
+    else:
+        flash("Unable to follow this user, try again", "danger")
+        return redirect(url_for("users.show",username=idol.username))
+
+@users_blueprint.route('/<idol_id>/unfollow', methods=['POST'])
+@login_required
+def unfollow(idol_id):
+    idol = User.get_by_id(idol_id)
+
+    if current_user.unfollow(idol):
+        flash(f"You unfollowed {idol.username}", "primary")
+        return redirect(url_for('users.show', username=idol.username))
+    else:
+        flash("Unable to unfollow this user, try again", "danger")
+        return redirect(url_for("users.show",username=idol.username))
+
+@users_blueprint.route('<username>/friend', methods=['GET'])
+@login_required
+def friend(username):
+    user = User.get_or_none(User.username == username)
+    if user:
+        return render_template("users/friend.html",user=user)
+    else:
+        flash(f"No {username} user found.", "danger" )
+        return redirect(url_for('home'))
+
+@users_blueprint.route('/<fan_id>/approve', methods=['POST'])
+@login_required
+def approve(fan_id):
+    fan = User.get_by_id(fan_id)
+
+    if current_user.approve_request(fan):
+        flash(f"You approve {fan.username}'s request", "primary")
+        return redirect(url_for('users.show', username=current_user.username))
+    else:
+        flash(f"Unable to approve this user, try again", "danger")
+        return redirect(url_for('users.show', username=current_user.username))
+
+@users_blueprint.route('/<fan_id>/delete_request', methods=['POST'])
+@login_required
+def delete_request(fan_id):
+    fan = User.get_by_id(fan_id)
+
+    if fan.unfollow(User.get_by_id(current_user.id)):
+        flash(f"You delete {fan.username}'s request", "primary")
+        return redirect(url_for('users.show', username=current_user.username))
+    else:
+        flash(f"Unable to delete this user's request, try again", "danger")
+        return redirect(url_for('users.show', username=current_user.username))
